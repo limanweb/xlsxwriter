@@ -363,7 +363,7 @@ class XLSXWriter
 		$cell_name = self::xlsCell($row_number, $column_number);
 
 		if (is_object($value) && $value instanceof \Carbon\Carbon) { 
-		    $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::convert_date_time($value->format('Y-m-d H:i;s')).'</v></c>');
+		    $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::convert_date_time($value->format('Y-m-d H:i:s')).'</v></c>');
 		} elseif (!is_scalar($value) || $value==='') { 
 		    //objects, array, empty
 	        $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'"/>');
