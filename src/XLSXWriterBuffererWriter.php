@@ -4,19 +4,29 @@ namespace Limanweb\XLSXWriter;
 
 class XLSXWriterBuffererWriter
 {
-    protected $fd=null;
-    protected $buffer='';
-    protected $check_utf8=false;
+    protected $fd = null;
+    protected $buffer = '';
+    protected $checkUTF8 = false;
     
-    public function __construct($filename, $fd_fopen_flags='w', $check_utf8=false)
+    /**
+     * 
+     * @param string $fileName
+     * @param string $fdFopenFlags
+     * @param boolean $checkUTF8
+     */
+    public function __construct($fileName, $fdFopenFlags = 'w', $checkUTF8 = false)
     {
-        $this->check_utf8 = $check_utf8;
-        $this->fd = fopen($filename, $fd_fopen_flags);
+        $this->checkUTF8 = $checkUTF8;
+        $this->fd = fopen($fileName, $fdFopenFlags);
         if ($this->fd===false) {
-            XLSXWriter::log("Unable to open $filename for writing.");
+            XLSXWriter::log("Unable to open $fileName for writing.");
         }
     }
     
+    /**
+     * 
+     * @param string $string
+     */
     public function write($string)
     {
         $this->buffer.=$string;
@@ -25,32 +35,44 @@ class XLSXWriterBuffererWriter
         }
     }
     
+    /**
+     * 
+     */
     protected function purge()
     {
         if ($this->fd) {
-            if ($this->check_utf8 && !self::isValidUTF8($this->buffer)) {
+            if ($this->checkUTF8 && !self::isValidUTF8($this->buffer)) {
                 XLSXWriter::log("Error, invalid UTF8 encoding detected.");
-                $this->check_utf8 = false;
+                $this->checkUTF8 = false;
             }
             fwrite($this->fd, $this->buffer);
-            $this->buffer='';
+            $this->buffer = '';
         }
     }
     
+    /**
+     * 
+     */
     public function close()
     {
         $this->purge();
         if ($this->fd) {
             fclose($this->fd);
-            $this->fd=null;
+            $this->fd = null;
         }
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->close();
     }
     
+    /**
+     * 
+     */
     public function ftell()
     {
         if ($this->fd) {
@@ -60,6 +82,11 @@ class XLSXWriterBuffererWriter
         return -1;
     }
     
+    /**
+     * 
+     * @param number $pos
+     * @return number
+     */
     public function fseek($pos)
     {
         if ($this->fd) {
