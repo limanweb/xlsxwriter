@@ -3,7 +3,7 @@
 	"description" : "Laravel extensions to to output an Excel compatible spreadsheet in (Office 2007+) xlsx format",
 	"keywords" : [
 		"laravel",
-		"postgresql"
+		"excel"
 	],
 	"type" : "package",
 	"license" : "MIT",
