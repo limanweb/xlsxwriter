@@ -343,45 +343,57 @@ class XLSXWriter
 		$sheet->merge_cells[] = $startCell . ":" . $endCell;
 	}
 
-	public function writeSheet(array $data, $sheet_name='', array $header_types=array())
+	public function writeSheet(array $data, $sheetName='', array $headerTypes=array())
 	{
-		$sheet_name = empty($sheet_name) ? 'Sheet1' : $sheet_name;
+		$sheetName = empty($sheetName) ? 'Sheet1' : $sheetName;
 		$data = empty($data) ? array(array('')) : $data;
-		if (!empty($header_types))
+		if (!empty($headerTypes))
 		{
-			$this->writeSheetHeader($sheet_name, $header_types);
+			$this->writeSheetHeader($sheetName, $headerTypes);
 		}
 		foreach($data as $i=>$row)
 		{
-			$this->writeSheetRow($sheet_name, $row);
+			$this->writeSheetRow($sheetName, $row);
 		}
-		$this->finalizeSheet($sheet_name);
+		$this->finalizeSheet($sheetName);
 	}
 
-	protected function writeCell(XLSXWriter_BuffererWriter &$file, $row_number, $column_number, $value, $num_format_type, $cell_style_idx)
+	/**
+	 * One cell output
+	 * 
+	 * @param XLSXWriter_BuffererWriter $file
+	 * @param integer $rowNumber
+	 * @param integer $columnNumber
+	 * @param mixed $value
+	 * @param string $numFormatType
+	 * @param integer $cellStyleIdx
+	 */
+	protected function writeCell(XLSXWriter_BuffererWriter &$file, $rowNumber, $columnNumber, $value, $numFormatType, $cellStyleIdx)
 	{
-		$cell_name = self::xlsCell($row_number, $column_number);
+		$cell_name = self::xlsCell($rowNumber, $columnNumber);
 
-		if (is_object($value) && $value instanceof \Carbon\Carbon) { 
-		    $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::convert_date_time($value->format('Y-m-d H:i:s')).'</v></c>');
+		if (is_object($value) && $value instanceof \Carbon\Carbon) {
+		    $file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="n"><v>'.self::convert_date_time($value->format('Y-m-d H:i:s')).'</v></c>');
+		} elseif (is_object($value) && $value instanceof \DateTime) {
+		    $file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="n"><v>'.self::convert_date_time($value->format('Y-m-d H:i:s')).'</v></c>');
 		} elseif (!is_scalar($value) || $value==='') { 
 		    //objects, array, empty
-	        $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'"/>');
+	        $file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'"/>');
 	    } elseif (is_string($value) && $value{0}=='='){
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="s"><f>'.self::xmlspecialchars($value).'</f></c>');
-		} elseif ($num_format_type=='n_date') {
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.intval(self::convert_date_time($value)).'</v></c>');
-		} elseif ($num_format_type=='n_datetime') {
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::convert_date_time($value).'</v></c>');
-		} elseif ($num_format_type=='n_numeric') {
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::xmlspecialchars($value).'</v></c>');//int,float,currency
-		} elseif ($num_format_type=='n_string') {
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="inlineStr"><is><t>'.self::xmlspecialchars($value).'</t></is></c>');
-		} elseif ($num_format_type=='n_auto' || 1) { //auto-detect unknown column types
+			$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="s"><f>'.self::xmlspecialchars($value).'</f></c>');
+		} elseif ($numFormatType=='n_date') {
+			$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="n"><v>'.intval(self::convert_date_time($value)).'</v></c>');
+		} elseif ($numFormatType=='n_datetime') {
+			$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="n"><v>'.self::convert_date_time($value).'</v></c>');
+		} elseif ($numFormatType=='n_numeric') {
+			$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="n"><v>'.self::xmlspecialchars($value).'</v></c>');//int,float,currency
+		} elseif ($numFormatType=='n_string') {
+			$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="inlineStr"><is><t>'.self::xmlspecialchars($value).'</t></is></c>');
+		} elseif ($numFormatType=='n_auto' || 1) { //auto-detect unknown column types
 			if (!is_string($value) || $value=='0' || ($value[0]!='0' && ctype_digit($value)) || preg_match("/^\-?(0|[1-9][0-9]*)(\.[0-9]+)?$/", $value)){
-				$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::xmlspecialchars($value).'</v></c>');//int,float,currency
+				$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="n"><v>'.self::xmlspecialchars($value).'</v></c>');//int,float,currency
 			} else { //implied: ($cell_format=='string')
-				$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="inlineStr"><is><t>'.self::xmlspecialchars($value).'</t></is></c>');
+				$file->write('<c r="'.$cell_name.'" s="'.$cellStyleIdx.'" t="inlineStr"><is><t>'.self::xmlspecialchars($value).'</t></is></c>');
 			}
 		}
 	}
