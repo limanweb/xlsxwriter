@@ -1,0 +1,24 @@
+{
+	"name" : "limanweb/xlsxwriter",
+	"description" : "Laravel extensions to to output an Excel compatible spreadsheet in (Office 2007+) xlsx format",
+	"keywords" : [
+		"laravel",
+		"postgresql"
+	],
+	"type" : "package",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Ilya Khondozhko",
+			"email" : "limanweb@mail.ru"
+		}
+	],
+	"require" : {
+		"php" : ">=5.2.1"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Limanweb\\XLSXWriter\\" : "src"
+		}
+	},
+	"minimum-stability" : "dev"
+}
