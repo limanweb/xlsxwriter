@@ -1,5 +1,10 @@
 # Changelog for limanweb/xlsxwriter
 
+## 0.2.0 (2019-03-19)
+
+- code refactoring
+- PSR-4 applyed
+
 ## 0.1.4 (2019-03-19)
 
 - support for \DateTime date value added
