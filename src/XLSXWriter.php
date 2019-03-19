@@ -362,9 +362,12 @@ class XLSXWriter
 	{
 		$cell_name = self::xlsCell($row_number, $column_number);
 
-		if (!is_scalar($value) || $value==='') { //objects, array, empty
-			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'"/>');
-		} elseif (is_string($value) && $value{0}=='='){
+		if (is_object($value) && $value instanceof \Carbon\Carbon) { 
+		    $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.self::convert_date_time($value->format('Y-m-d H:i;s')).'</v></c>');
+		} elseif (!is_scalar($value) || $value==='') { 
+		    //objects, array, empty
+	        $file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'"/>');
+	    } elseif (is_string($value) && $value{0}=='='){
 			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="s"><f>'.self::xmlspecialchars($value).'</f></c>');
 		} elseif ($num_format_type=='n_date') {
 			$file->write('<c r="'.$cell_name.'" s="'.$cell_style_idx.'" t="n"><v>'.intval(self::convert_date_time($value)).'</v></c>');
@@ -830,6 +833,7 @@ class XLSXWriter
 	//------------------------------------------------------------------
 	public static function convert_date_time($date_input) //thanks to Excel::Writer::XLSX::Worksheet.pm (perl)
 	{
+	    
 		$days    = 0;    # Number of days since epoch
 		$seconds = 0;    # Time expressed as fraction of 24h hours in seconds
 		$year=$month=$day=0;
