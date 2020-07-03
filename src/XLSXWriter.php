@@ -42,10 +42,8 @@ class XLSXWriter
      */
     public function __construct()
     {
-        if (!ini_get('date.timezone')) {
-            //using date functions can kick out warning if this isn't set
-            date_default_timezone_set('UTC');
-        }
+        date_default_timezone_set(config('app.timezone'));
+
         $this->addCellStyle('GENERAL', null);
         $this->addCellStyle('GENERAL', null);
         $this->addCellStyle('GENERAL', null);

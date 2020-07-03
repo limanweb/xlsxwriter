@@ -1,5 +1,14 @@
 # Changelog for limanweb/xlsxwriter
 
+## 0.4.0 (2020-07-03)
+
+- reset timezone to UTC bug fixed
+
+## 0.3.0 (2020-06-12)
+
+- code format 
+- $numFormat=GENERAL added
+
 ## 0.2.0 (2019-03-19)
 
 - code refactoring
