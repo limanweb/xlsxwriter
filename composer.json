@@ -19,5 +19,6 @@
 		"psr-4" : {
 			"Limanweb\\XLSXWriter\\" : "src"
 		}
-	}
+	},
+	"minimum-stability" : "dev"
 }
