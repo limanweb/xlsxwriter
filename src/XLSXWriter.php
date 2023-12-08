@@ -513,7 +513,12 @@ class XLSXWriter
         $sheetName = empty($sheetName) ? 'Sheet1' : $sheetName;
         $data = empty($data) ? [['']] : $data;
         if (!empty($headerTypes)) {
-            $this->writeSheetHeader($sheetName, $headerTypes);
+            if (is_object($row) && method_exists($row::class, 'toArray')) {
+                $row = $item->toArray();
+            } else {
+                $row = $item;
+            }
+            $this->writeSheetRow($sheetName, $row);
         }
         foreach($data as $row) {
             $this->writeSheetRow($sheetName, $row);
