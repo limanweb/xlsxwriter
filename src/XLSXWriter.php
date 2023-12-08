@@ -516,7 +516,7 @@ class XLSXWriter
             $this->writeSheetHeader($sheetName, $headerTypes);
         }
         foreach($data as $item) {
-            if (is_object($item) && method_exists(get_class($item, 'toArray')) {
+            if (is_object($item) && method_exists(get_class($item, 'toArray'))) {
                 $row = $item->toArray();
             } else {
                 $row = $item;
